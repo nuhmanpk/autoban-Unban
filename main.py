@@ -1,44 +1,31 @@
-import os
+import pyrogram
 from pyrogram import Client, filters
+import time
 
 
-DOWNLOAD_LOCATION = os.environ.get("DOWNLOAD_LOCATION", "./DOWNLOADS/")
-
-bughunter0 = Client(
-    "Mp4-to-Mp3-Conveter",
+app = Client(
+    "ban/unban for 24 Hour",
     bot_token = os.environ["BOT_TOKEN"],
     api_id = int(os.environ["API_ID"]),
     api_hash = os.environ["API_HASH"]
 )
 
-DOWNLOAD_LOCATION = os.environ.get("DOWNLOAD_LOCATION", "./DOWNLOADS/AudioBoT/")
+@app.on_message(filters.command(["start"]))
+async def start(bot,message):
+    await message.reply_text("Hello")
 
 
-@bughunter0.on_message(filters.private & filters.text)
-async def start(bot, message):
-    await message.reply_text("Send a video for converting to audio")
+@app.on_message(filters.group & filters.new_chat_members)
+async def ban(bot,message):
+    chat_id=message.chat.id
+    user_id=message.from_user.id
+    # Kick chat member and automatically unban after 24h
+    await bot.kick_chat_member(chat_id, user_id, int(time.time() + 86400))
 
 
-@bughunter0.on_message(filters.video & filters.private)
-async def mp3(bot, message):
-    
-    # download video
-    file_path = DOWNLOAD_LOCATION + f"{message.from_user.id}.mp3"
-    txt = await message.reply_text("Downloading to My server.....")
-    await message.download(file_path)
-    await txt.edit_text("Downloaded Successfully")
-    
-    # convert to audio
-    await txt.edit_text("Converting to audio")
-    await message.reply_audio(audio=file_path, caption="@BugHunterBots", quote=True)
-    
-    # remove file
-    try:
-        os.remove(file_path)
-    except:
-        pass
-    
-    await txt.delete()
+app.run()
 
 
-bughunter0.run()
+
+
+
