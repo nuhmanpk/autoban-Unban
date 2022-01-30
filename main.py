@@ -18,7 +18,7 @@ async def start(bot,message):
 async def ban(bot,message):
     chat_id=message.chat.id
     user_id=message.from_user.id
-    # Kick chat member and automatically unban after 24h
+    # Kick chat member and automatically and unban after 24h
     await bot.kick_chat_member(chat_id, user_id, int(time.time() + 86400))
 
 
