@@ -1,5 +1,7 @@
+import os
 from pyrogram import Client, filters
-import time
+from pyrogram.types import Message, ChatPermissions
+
 
 
 app = Client(
@@ -10,16 +12,16 @@ app = Client(
 )
 
 @app.on_message(filters.command(["start"]))
-async def start(bot,message):
-    await message.reply_text("Hello")
+async def start(app, Message):
+    await Message.reply_text("Hello")
 
 
 @app.on_message(filters.group & filters.new_chat_members)
-async def ban(bot,message):
-    chat_id=message.chat.id
-    user_id=message.from_user.id
+async def ban(app,Message):
+    chat_id=Message.chat.id
+    user_id=Message.from_user.id
     # Kick chat member and automatically and unban after 24h
-    await bot.kick_chat_member(chat_id, user_id, int(time.time() + 86400))
+    await app.ban_chat_member(chat_id, user_id, int(time.time() + 86400))
 
 
 app.run()
